@@ -9,7 +9,7 @@ Our task focuses on predicting heart disease based on key health indicators coll
 - **Source**: CDC Behavioral Risk Factor Surveillance System (BRFSS)
 - **Data Description**:  
   - 2022 annual survey data from 400,000+ adults.
-  - Dataset reduced to 40 relevant variables linked to heart disease risk.
+  - Dataset with 40 relevant variables linked to heart disease risk.
   - Binary target variable: `HadHeartAttack` ("Yes" or "No").
   - Class imbalance exists — techniques like resampling and class weight adjustment are needed.
 
