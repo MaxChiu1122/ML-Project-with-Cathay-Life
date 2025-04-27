@@ -1,4 +1,4 @@
-# ML-Project-x-Cathay-Life
+# ML-Project-with-Cathay-Life
 
 ## Overview
 This project is part of the Machine Learning and Artificial Intelligence course in collaboration with **Cathay Life**. In this project, we work on real-world problems in the financial and healthcare industries using machine learning methods.
