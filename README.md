@@ -21,5 +21,9 @@ Our task focuses on predicting heart disease based on key health indicators coll
 
 
 ## References
-- Original dataset and description adapted from CDC BRFSS survey. (https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease/data)
-- Inspiration: Imbalance treatment techniques in machine learning. (https://www.kaggle.com/code/zeyadusf/imbalance-treatment-techniques-in-machine-learning)
+- Original dataset and description adapted from CDC BRFSS survey (https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease/data)
+- Inspiration:
+  - Imbalance treatment techniques in machine learning (https://www.kaggle.com/code/zeyadusf/imbalance-treatment-techniques-in-machine-learning)
+  - Insurance Prediction- LGBM,GBM,XGBoost EDA (https://www.kaggle.com/code/drfrank/insurance-prediction-lgbm-gbm-xgboost-eda)
+  - Classification models for Biomechanical Features (https://www.kaggle.com/code/shahriyarmammadli/classification-models-for-biomechanical-features/notebook)
+  - Seabron & Plotly for Beginners (https://www.kaggle.com/code/drfrank/seabron-plotly-for-beginners)
