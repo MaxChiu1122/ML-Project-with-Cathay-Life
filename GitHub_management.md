@@ -69,3 +69,5 @@
     git lfs install
     git lfs track "*.psd"
     ```
+
+reference: https://www.youtube.com/watch?v=FKXRiAiQFiY&t=634s&ab_channel=PAPAYA%E9%9B%BB%E8%85%A6%E6%95%99%E5%AE%A4
