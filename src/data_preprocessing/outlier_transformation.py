@@ -4,7 +4,7 @@ from scipy import stats
 from scipy.stats import mstats, zscore, boxcox, shapiro, probplot
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from sklearn.preprocessing import RobustScaler
 
 def winsorization(df, column, lower_percentile=0.01, upper_percentile=0.01):
     """
@@ -140,3 +140,10 @@ def qq_plot(df, column, method, palette='Set2'):
     plt.legend()
 
     plt.show()
+
+def robust_scaling(df, column):
+    df_transformed = df.copy()
+    scaler = RobustScaler()
+    df_transformed[column] = scaler.fit_transform(df[[column]])
+    return df_transformed
+
