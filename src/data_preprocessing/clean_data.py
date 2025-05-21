@@ -1,50 +1,117 @@
 import pandas as pd
+from typing import List, Optional
 
-def clean_data(input_path, output_path, target_column="HadHeartAttack"):
+
+class DataCleaner:
     """
-    Clean the input dataset by handling missing values and renaming the target column.
-    Save the cleaned data to a new CSV file.
-
-    Parameters:
-    - input_path (str): Path to the raw input CSV file (e.g., sample_data.csv).
-    - output_path (str): Path to save the cleaned CSV file (e.g., cleaned_sample_data.csv).
-    - target_column (str): The new name for the target column (default "HadHeartAttack").
+    A class to perform group-based imputation and end-to-end data cleaning.
     """
-    # Load data
-    print("Loading data...")
-    data = pd.read_csv(input_path)
-    print("Columns before processing:", data.columns.tolist())
-    
-    # Handle missing values
-    print("Handling missing values...")
-    numerical_cols = data.select_dtypes(include=['float64', 'int64']).columns.tolist()
-    categorical_cols = data.select_dtypes(include=['object', 'category']).columns.tolist()
-    
-    for col in numerical_cols:
-        if col != target_column:
-            data[col] = data[col].fillna(data[col].median())
-    for col in categorical_cols:
-        if col != target_column:
-            data[col] = data[col].fillna(data[col].mode()[0])
-    
-    # Drop rows where target_column is NaN
-    print(f"Dropping rows where '{target_column}' is NaN...")
-    before_drop = len(data)
-    data = data.dropna(subset=[target_column])
-    after_drop = len(data)
-    print(f"Dropped {before_drop - after_drop} rows.")
 
-    print(f"Missing values after processing:\n{data.isnull().sum()}")
-    
-    # Save cleaned data
-    print(f"Saving cleaned data to {output_path}...")
-    data.to_csv(output_path, index=False)
-    print("Cleaned data saved successfully.")
-    print("Columns after processing:", data.columns.tolist())
+    def __init__(self, group_cols: Optional[List[str]] = None):
+        self.group_cols = group_cols or ['SmokerStatus', 'RaceEthnicityCategory', 'AgeCategory', 'Sex']
+
+    def clean_data(
+        self,
+        input_path: str,
+        output_path: str,
+        target_column: str = "HadHeartAttack",
+        missing_row_threshold: float = 0.3
+    ) -> None:
+        """
+        Load, clean, and save the dataset using group-based imputation.
+
+        Parameters:
+        - input_path (str): Path to the raw input CSV file.
+        - output_path (str): Path to save the cleaned CSV file.
+        - target_column (str): The name of the target column.
+        - missing_row_threshold (float): Maximum allowed fraction of missing values per row.
+        """
+        print("🔹 Loading data...")
+        df = pd.read_csv(input_path)
+        print(f"Initial shape: {df.shape}")
+
+        print(f"\n🔹 Dropping rows with missing target '{target_column}'...")
+        before = df.shape[0]
+        df = df.dropna(subset=[target_column])
+        after = df.shape[0]
+        print(f"Dropped {before - after} rows. Remaining: {after}")
+
+        print(f"\n🔹 Dropping rows with more than {int(missing_row_threshold * 100)}% missing values...")
+        missing_ratio = df.isnull().mean(axis=1)
+        rows_before = df.shape[0]
+        df = df[missing_ratio <= missing_row_threshold]
+        rows_after = df.shape[0]
+        print(f"Dropped {rows_before - rows_after} rows. Remaining: {rows_after}")
+
+        print("\n🔹 Starting group-based imputation...")
+        df_cleaned = self.group_based_imputation(df)
+
+        print(f"\n🔹 Saving cleaned data to '{output_path}'...")
+        df_cleaned.to_csv(output_path, index=False)
+        print("✅ Cleaned data saved.")
+
+    def group_based_imputation(self, df: pd.DataFrame, group_cols: Optional[List[str]] = None) -> pd.DataFrame:
+        group_cols = group_cols or self.group_cols
+        df = df.copy()
+
+        print("Step 1️⃣: Imputing missing values in grouping columns...")
+        df = self._handle_grouping_columns(df, group_cols)
+
+        print("Step 2️⃣: Imputing missing values in remaining columns...")
+        df = self._handle_other_columns(df, group_cols)
+
+        print("✅ Group-based imputation completed.")
+        print("🔎 Remaining missing values per column:\n", df.isnull().sum())
+        return df
+
+    def _handle_grouping_columns(self, df: pd.DataFrame, group_cols: List[str]) -> pd.DataFrame:
+        for col in group_cols:
+            if df[col].isnull().sum() == 0:
+                continue
+
+            if df[col].dtype == 'object' or str(df[col].dtype) == 'category':
+                mode_val = df[col].mode().iloc[0]
+                df[col] = df[col].fillna(mode_val)
+                print(f"Filled missing values in '{col}' with mode: {mode_val}")
+            else:
+                median_val = df[col].median()
+                df[col] = df[col].fillna(median_val)
+                print(f"Filled missing values in '{col}' with median: {median_val}")
+        return df
+
+    def _handle_other_columns(self, df: pd.DataFrame, group_cols: List[str]) -> pd.DataFrame:
+        for i, col in enumerate(df.columns):
+            if col in group_cols or df[col].isnull().sum() == 0:
+                continue
+
+            print(f"Imputing column: '{col}' ({i+1}/{len(df.columns)})")
+
+            if df[col].dtype == 'object' or str(df[col].dtype) == 'category':
+                df[col] = df.groupby(group_cols)[col].transform(
+                    lambda x: x.fillna(x.mode().iloc[0]) if not x.mode().empty else x)
+
+                if df[col].isnull().sum() > 0:
+                    fallback = df[col].mode()
+                    if not fallback.empty:
+                        df[col] = df[col].fillna(fallback.iloc[0])
+                        print(f"Fallback: filled remaining nulls in '{col}' with overall mode.")
+            else:
+                df[col] = df.groupby(group_cols)[col].transform(lambda x: x.fillna(x.median()))
+                if df[col].isnull().sum() > 0:
+                    fallback = df[col].median()
+                    df[col] = df[col].fillna(fallback)
+                    print(f"Fallback: filled remaining nulls in '{col}' with overall median.")
+        return df
 
 
-
-# if __name__ == "__main__":
-#     input_path = '../data/sample_data.csv'
-#     output_path = '../data/cleaned_sample_data.csv'
-#     clean_data(input_path, output_path)
+def clean_data(input_path: str, output_path: str, target_column: str = "HadHeartAttack", missing_row_threshold: float = 0.3) -> None:
+    """
+    Wrapper function to clean data using DataCleaner class.
+    """
+    cleaner = DataCleaner()
+    cleaner.clean_data(
+        input_path=input_path,
+        output_path=output_path,
+        target_column=target_column,
+        missing_row_threshold=missing_row_threshold
+    )
