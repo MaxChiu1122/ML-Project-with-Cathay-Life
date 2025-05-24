@@ -1,0 +1,121 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+from imblearn.over_sampling import SMOTE, BorderlineSMOTE, ADASYN
+from imblearn.combine import SMOTEENN, SMOTETomek
+from collections import Counter
+import os
+
+# 建立資料夾
+output_dir = "resampling_output"
+os.makedirs(output_dir, exist_ok=True)
+
+# 讀取資料
+df = pd.read_csv("/Users/hwangyinung/Downloads/heart_2020_cleaned.csv")
+
+# 類別編碼
+df_encoded = df.copy()
+for column in df.columns:
+    if df[column].dtype == 'object':
+        df_encoded[column] = LabelEncoder().fit_transform(df[column])
+
+# 特徵與標籤
+X = df_encoded.drop('HeartDisease', axis=1)
+y = df_encoded['HeartDisease']
+
+# 顯示原始類別分布
+print("原始類別分布：", Counter(y))
+
+# 標準化
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 切分訓練/測試集
+X_train, X_test, y_train, y_test = train_test_split(
+    X_scaled, y, test_size=0.2, stratify=y, random_state=42)
+
+# 降低資源耗用：僅使用部分樣本進行 SMOTE
+X_train_small = X_train[:20000]
+y_train_small = y_train[:20000]
+
+# 定義採樣方法
+samplers = {
+    'SMOTE': SMOTE(random_state=42),
+    'BorderlineSMOTE': BorderlineSMOTE(random_state=42),
+    'ADASYN': ADASYN(random_state=42),
+    'SMOTEENN': SMOTEENN(random_state=42),
+    'SMOTETomek': SMOTETomek(random_state=42)
+}
+
+results = {}
+feature_maps = {}
+
+for name, sampler in samplers.items():
+    print(f"\n 執行 {name} ...")
+    X_res, y_res = sampler.fit_resample(X_train_small, y_train_small)
+
+    print(f"{name} 前樣本數：{len(y_train_small)}")
+    print(f"{name} 後樣本數：{len(y_res)}")
+    print(f"{name} 類別分布：{Counter(y_res)}")
+
+    model = RandomForestClassifier(n_estimators=30, max_depth=8, n_jobs=-1, random_state=42)
+    model.fit(X_res, y_res)
+    y_pred = model.predict(X_test)
+
+    report = classification_report(y_test, y_pred, output_dict=True)
+    print(f"=== {name} 分類報告 ===")
+    print(classification_report(y_test, y_pred))
+
+    results[name] = {
+        "precision": report["weighted avg"]["precision"],
+        "recall": report["weighted avg"]["recall"],
+        "f1-score": report["weighted avg"]["f1-score"]
+    }
+
+    df_bal = pd.DataFrame(X_res, columns=X.columns)
+    df_bal["HeartDisease"] = y_res
+    df_bal.to_csv(f"{output_dir}/train_data_{name.lower()}.csv", index=False)
+
+    importances = model.feature_importances_
+    sorted_idx = np.argsort(importances)[::-1]
+    feature_maps[name] = importances
+    plt.figure(figsize=(10, 5))
+    plt.title(f"Feature Importance - {name}")
+    plt.bar(range(len(importances)), importances[sorted_idx])
+    plt.xticks(range(len(importances)), X.columns[sorted_idx], rotation=90)
+    plt.tight_layout()
+    plt.savefig(f"{output_dir}/feature_importance_{name.lower()}.png")
+    plt.close()
+
+# 統整結果
+df_result = pd.DataFrame(results).T
+df_result.index.name = "Method"
+df_result.to_csv(f"{output_dir}/resampling_comparison.csv")
+df_result.to_excel(f"{output_dir}/resampling_comparison.xlsx")
+
+# 顯示特徵重要性圖
+for name, importances in feature_maps.items():
+    feature_names = X.columns
+    sorted_idx = np.argsort(importances)[::-1]
+    plt.figure(figsize=(12, 6))
+    plt.title(f"Feature Importance ({name})")
+    plt.bar(range(len(importances)), importances[sorted_idx])
+    plt.xticks(range(len(importances)), feature_names[sorted_idx], rotation=90)
+    plt.tight_layout()
+    plt.show()
+
+# 繪製 f1-score 比較圖
+plt.figure(figsize=(10, 6))
+df_result["f1-score"].plot(kind='bar', color='skyblue')
+plt.title("F1-score Comparison Across Resampling Methods")
+plt.ylabel("F1-score")
+plt.ylim(0, 1)
+plt.xticks(rotation=45)
+plt.grid(axis='y')
+plt.tight_layout()
+plt.savefig(f"{output_dir}/f1_score_comparison.png")
+plt.show()
