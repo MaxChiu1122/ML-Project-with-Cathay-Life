@@ -14,10 +14,11 @@ def encode_features(df):
     for col in binary_cols:
         df[col] = df[col].map({'Yes': 1, 'No': 0})
 
-    # Ordinal encoding
     sex_map = {
         'Female': 0, 'Male': 1
     }
+    
+    # Ordinal encoding
     
     general_health_map = {
         'Poor': 0, 'Fair': 1, 'Good': 2, 'Very good': 3, 'Excellent': 4
@@ -50,7 +51,8 @@ def encode_features(df):
     })
     
     df['CovidPos'] = df['CovidPos'].map({
-        'No': 0, 'Tested positive using home test without a health professional': 1,
+        'No': 0,
+        'Tested positive using home test without a health professional': 1,
         'Yes': 2
     })
     

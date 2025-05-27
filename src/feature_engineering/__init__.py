@@ -5,7 +5,7 @@ from .feature_engineering import (
     create_polynomial_features,
     engineer_features
 )
-from .encoding import encode_features
+from ..data_preprocessing.encoding import encode_features
 
 __all__ = [
     'create_interaction_features',

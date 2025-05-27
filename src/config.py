@@ -14,7 +14,10 @@ FEATURE_CONFIG = {
     'interaction_features': [
         'BMI',
         'WeightInKilograms',
-        'HeightInMeters'
+        'HeightInMeters',
+        'PhysicalHealthDays',
+        'MentalHealthDays',
+        'SleepHours',
     ]
 }
 
