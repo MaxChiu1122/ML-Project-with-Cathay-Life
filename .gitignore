@@ -1,6 +1,5 @@
 # Ignore model outputs
 models/
-data/
 *.pkl
 *.joblib
 *.h5
@@ -18,6 +17,5 @@ data/
 
 # Ignore Jupyter/IPython checkpoints
 .ipynb_checkpoints/data/
-models/
 .DS_Store
 data/
