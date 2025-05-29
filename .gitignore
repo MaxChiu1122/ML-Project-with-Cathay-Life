@@ -1,4 +1,19 @@
-*.pyc
-__pycache__/
+# Ignore model outputs
+models/
+*.pkl
+*.joblib
+*.h5
+*.onnx
+*.tflite
+*.json
+*.log
+
+# Ignore virtual environments
 .venv/
-data/
+.env/
+
+# Ignore system files
+.DS_Store
+
+# Ignore Jupyter/IPython checkpoints
+.ipynb_checkpoints/
