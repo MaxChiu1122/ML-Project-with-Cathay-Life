@@ -20,3 +20,4 @@ data/
 .ipynb_checkpoints/data/
 models/
 .DS_Store
+data/
