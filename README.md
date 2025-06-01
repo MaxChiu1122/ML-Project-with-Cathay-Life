@@ -69,7 +69,7 @@ This project showcases how machine learning can be embedded into the **insurance
 - 易可倫（金融四）- HelloAustinYi  
 - 鄭達嶸（金融四）- Rod-Zheng 
 - 黃以穠（風管四）- Columbia0728
-- - 周紹璞（經濟四）- pacificshoulder
+- 周紹璞（經濟四）- pacificshoulder
 
 ## References
 - [CDC BRFSS Dataset (Kaggle)](https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease/data)
