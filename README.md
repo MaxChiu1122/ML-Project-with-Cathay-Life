@@ -65,11 +65,11 @@ This project was completed as part of a university-industry collaboration with *
 This project showcases how machine learning can be embedded into the **insurance product cycle** — from risk identification to dynamic pricing and engagement. With further real-world integration (e.g., health app syncing, policy feedback loops), Cathay Life can pioneer a data-driven, preventive insurance model in Taiwan.
 
 ## Team Members
-- 邱士展（金融四）  
-- 周紹璞（經濟四）  
-- 易可倫（金融四）  
-- 鄭達嶸（金融四）  
-- 黃以穠（風管四）
+- 邱士展（金融四）- MaxChiu1122  
+- 易可倫（金融四）- HelloAustinYi  
+- 鄭達嶸（金融四）- Rod-Zheng 
+- 黃以穠（風管四）- Columbia0728
+- - 周紹璞（經濟四）- pacificshoulder
 
 ## References
 - [CDC BRFSS Dataset (Kaggle)](https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease/data)
