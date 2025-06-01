@@ -1,49 +1,41 @@
 # ML-Project-with-Cathay-Life
 
 ## Overview
-This project is part of the Machine Learning and Artificial Intelligence course in collaboration with **Cathay Life**. In this project, we work on real-world problems in the financial and healthcare industries using machine learning methods.
-
-Our task focuses on predicting heart disease based on key health indicators collected by the **CDC** through the Behavioral Risk Factor Surveillance System (BRFSS). Using machine learning models, we aim to identify important risk factors and improve prediction accuracy.
+This project, in collaboration with **Cathay Life**, focuses on predicting heart disease using machine learning. The data is sourced from the **CDC**'s Behavioral Risk Factor Surveillance System (BRFSS), and our goal is to identify key risk factors and improve prediction accuracy.
 
 ## Dataset
-- **Source**: CDC Behavioral Risk Factor Surveillance System (BRFSS)
-- **Data Description**:  
-  - 2022 annual survey data from 400,000+ adults.
-  - Dataset with 40 relevant variables linked to heart disease risk.
-  - Binary target variable: `HadHeartAttack` ("Yes" or "No").
-  - Class imbalance exists — techniques like resampling, class weighting, and SMOTE are used to address it.
+- **Source**: CDC BRFSS 2022 survey data
+- **Key Variables**: 40+ variables linked to heart disease risk
+- **Target Variable**: `HadHeartAttack` ("Yes" or "No")
+- **Challenges**: Class imbalance, addressed through resampling, class weighting, and SMOTE
 
-## Project Workflow
-The project workflow consists of several stages:
-
-### 1. Data Preprocessing and Cleaning
-- **Data Loading and Exploration**: We load the raw data and explore its structure, checking for missing values and performing initial visualizations.
-- **Data Cleaning**: Missing values are handled using a group-based imputation strategy. Rows with more than 30% missing data are excluded, and imputation is performed based on the median or mode within defined groups.
-- **Feature Engineering**: Features are encoded, and some new features are created using interaction terms and binning techniques to categorize continuous variables like BMI and Sleep Hours.
-- **Outlier Detection and Transformation**: Local and global outlier detection methods, such as Isolation Forest (IForest) and SMOTENC, are applied to clean the data further.
+## Workflow
+### 1. Data Preprocessing
+- **Data Loading & Exploration**: Examine structure and missing values
+- **Cleaning**: Impute missing values using group-based imputation (median/mode), excluding rows with >30% missing data
+- **Feature Engineering**: Encode features, create interaction terms, and bin continuous variables (e.g., BMI, Sleep Hours)
+- **Outlier Handling**: Apply Isolation Forest and SMOTENC for outlier detection
 
 ### 2. Feature Engineering
-- **Encoding**: Categorical features are encoded using LabelEncoder and OneHotEncoder.
-- **Scaling**: Non-binary numerical features are standardized using `StandardScaler`.
-- **Interaction Features**: Interaction terms are created between continuous and categorical features to capture non-linear relationships.
-  
-### 3. Model Selection, Hyperparameter Tuning, and Evaluation
-- **Model Selection**: H2O AutoML is used to select and train the best classification models. The models are trained on the processed data using both original and SMOTE-augmented data.
-- **Revenue Optimization**: Custom objective functions are defined based on revenue calculation. False Negatives (FN) are penalized more heavily than True Negatives (TN), reflecting the business context.
-- **Hyperparameter Tuning**: Hyperparameter tuning is performed using `Hyperopt` for both LightGBM and XGBoost, optimizing for the revenue score instead of traditional accuracy.
-- **Model Evaluation**: The best models are evaluated using various metrics, including accuracy, precision, recall, F1 score, AUC, and a custom revenue function. SHAP analysis is performed to interpret model feature importance.
+- **Encoding**: LabelEncode and OneHotEncode categorical features
+- **Scaling**: Standardize numerical features (except binary ones)
+- **Interaction Terms**: Create non-linear interaction features between continuous and categorical variables
 
-### 4. Generative Adversarial Networks (GAN)
-- **GANs for Data Augmentation**: GANs are trained on the minority class (patients with heart disease) to generate synthetic data and balance the dataset. This synthetic data is then combined with real data to train a final model.
+### 3. Model Training & Tuning
+- **Model Selection**: Use H2O AutoML, LightGBM, XGBoost, with SMOTE and GAN-augmented data
+- **Custom Objective**: Define revenue-based objective, penalizing False Negatives (FN) more than True Negatives (TN)
+- **Hyperparameter Tuning**: Perform hyperparameter optimization using `Hyperopt`
+- **Data Augmentation**: Use GANs to generate synthetic data for the minority class
 
-### 5. Final Model and Results
-- **Best Model Selection**: The best models from H2O AutoML, LightGBM, XGBoost, and GAN-augmented data are compared based on their revenue performance on the test set.
-- **Results**: The model with the highest revenue gain over the baseline is selected. The confusion matrix, AUC curve, and SHAP force plots are generated for the final model.
+### 4. Evaluation & Results
+- **Best Model**: Compare models from H2O AutoML, LightGBM, SMOTE, and GAN-augmented data based on revenue performance
+- **Evaluation Metrics**: Use accuracy, precision, recall, F1 score, AUC, and SHAP analysis for feature importance
+- **Final Model**: Select the model with the highest revenue gain, and generate confusion matrix, AUC curve, and SHAP plots
 
 ## References
-- Original dataset and description adapted from CDC BRFSS survey (https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease/data)
-- Inspiration:
-  - Imbalance treatment techniques in machine learning (https://www.kaggle.com/code/zeyadusf/imbalance-treatment-techniques-in-machine-learning)
-  - Insurance Prediction- LGBM,GBM,XGBoost EDA (https://www.kaggle.com/code/drfrank/insurance-prediction-lgbm-gbm-xgboost-eda)
-  - Classification models for Biomechanical Features (https://www.kaggle.com/code/shahriyarmammadli/classification-models-for-biomechanical-features/notebook)
-  - Seabron & Plotly for Beginners (https://www.kaggle.com/code/drfrank/seabron-plotly-for-beginners)
+- CDC BRFSS dataset: [Link to Kaggle](https://www.kaggle.com/datasets/kamilpytlak/personal-key-indicators-of-heart-disease/data)
+- Additional Resources:
+  - [Imbalance treatment techniques in ML](https://www.kaggle.com/code/zeyadusf/imbalance-treatment-techniques-in-machine-learning)
+  - [Insurance Prediction- LGBM, GBM, XGBoost EDA](https://www.kaggle.com/code/drfrank/insurance-prediction-lgbm-gbm-xgboost-eda)
+  - [Classification models for Biomechanical Features](https://www.kaggle.com/code/shahriyarmammadli/classification-models-for-biomechanical-features/notebook)
+  - [Seaborn & Plotly for Beginners](https://www.kaggle.com/code/drfrank/seabron-plotly-for-beginners)
