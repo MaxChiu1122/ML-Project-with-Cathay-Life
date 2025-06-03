@@ -4,6 +4,12 @@ matplotlib
 seaborn
 plotly
 scikit-learn
+h2o
 imbalanced-learn
+imblearn
+lightgbm
 xgboost
-flaml
+shap
+hyperopt
+torch
+tqdm
