@@ -3,6 +3,11 @@
 ## Overview
 This project was completed as part of a university-industry collaboration with **Cathay Life**. Our objective was to build a machine learning model that predicts the risk of **heart attacks** in policyholders using health-related data from the **CDC BRFSS 2022 survey**. The ultimate goal is to integrate AI into **value-based insurance (VBI)** and support proactive risk management within the insurance ecosystem.
 
+## 📄 Final Report
+You can read our full project report here:
+
+➡️ [Click here to read the full report (PDF)](Pdf/final.pdf)
+
 ## Business Context
 - **Industry Need**: Heart disease is a major claim source, pressuring insurance profitability.
 - **Solution Strategy**: Predict → Intervene → Reward — enabling early risk detection and targeted health engagement.
